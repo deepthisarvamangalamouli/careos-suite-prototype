@@ -25,6 +25,8 @@ create table if not exists care_plans (
   goals text,
   needs text,
   risks text,
+  emergency_contact_name text,
+  emergency_contact_phone text,
   updated_at timestamptz not null default now()
 );
 
