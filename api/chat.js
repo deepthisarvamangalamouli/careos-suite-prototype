@@ -1,7 +1,7 @@
 // POST /api/chat
 // Body: { messages: [{role, content}], context: visitNotes[] }
-// Requires env var: GROK_API_KEY (from console.x.ai)
-// Uses Grok's OpenAI-compatible endpoint at https://api.x.ai/v1/chat/completions
+// Requires env var: GROQ_API_KEY (from console.groq.com)
+// Uses Groq's OpenAI-compatible endpoint at https://api.groq.com/openai/v1/chat/completions
 
 const SYSTEM_PROMPT = `You are the CareOS Suite assistant, embedded in a home care
 rostering and compliance app. You help care managers and carers by reading
@@ -14,9 +14,9 @@ enough information, say so and suggest what to check.`
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const apiKey = process.env.GROK_API_KEY
+  const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
-    return res.status(500).json({ error: 'GROK_API_KEY is not set on the server.' })
+    return res.status(500).json({ error: 'GROQ_API_KEY is not set on the server.' })
   }
 
   const { messages = [], context = [] } = req.body || {}
@@ -29,14 +29,14 @@ export default async function handler(req, res) {
     : 'No recent visit notes are available.'
 
   try {
-    const response = await fetch('https://api.x.ai/v1/chat/completions', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'grok-4',
+        model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'system', content: contextBlock },
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const text = await response.text()
-      return res.status(response.status).json({ error: `Grok API error: ${text}` })
+      return res.status(response.status).json({ error: `Groq API error: ${text}` })
     }
 
     const data = await response.json()
