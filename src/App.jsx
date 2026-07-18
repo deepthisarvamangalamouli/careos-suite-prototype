@@ -11,6 +11,7 @@ import Rostering from './pages/Rostering'
 import Compliance from './pages/Compliance'
 import Billing from './pages/Billing'
 import Assistant from './pages/Assistant'
+import FamilyPortal from './pages/FamilyPortal'
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth()
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/family/:token" element={<FamilyPortal />} />
           <Route
             path="/app"
             element={
