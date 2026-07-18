@@ -15,7 +15,7 @@ Browser (React SPA)
                     │
                     ├── create-checkout-session.js ──▶ Stripe Checkout
                     ├── create-portal-session.js    ──▶ Stripe Billing Portal
-                    ├── chat.js                     ──▶ Grok (x.ai)
+                    ├── chat.js                     ──▶ Groq
                     │
                     ▲
                     │ webhook
@@ -42,9 +42,9 @@ Two different Supabase keys are in play, on purpose:
   the prototype never touches card data. The webhook is the only piece we
   own: it listens for what Stripe tells us and mirrors it into
   `billing_accounts`.
-- **Grok via a serverless function, not called from the browser** — the API
+- **Groq via a serverless function, not called from the browser** — the API
   key has to stay server-side, so `/api/chat.js` is a thin proxy: it takes
-  the conversation plus recent visit notes, forwards them to Grok, and
+  the conversation plus recent visit notes, forwards them to Groq, and
   returns the reply.
 - **Vercel for both hosting and the backend-for-frontend layer** — the
   `/api` folder becomes serverless functions automatically, so there's no

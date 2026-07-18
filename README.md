@@ -1,7 +1,7 @@
 # CareOS Suite — Prototype
 
 A care planning, billing, and AI-assistant mini-suite for home care teams,
-built on React + Supabase + Stripe + Grok, deployed on Vercel.
+built on React + Supabase + Stripe + Groq, deployed on Vercel.
 
 This is the companion prototype to the CareOS rostering/compliance app —
 same domain, different slice: **care plans → visit notes → AI summaries →
@@ -15,7 +15,7 @@ tools.
 | **Care Planning** | Clients, care plans (goals/needs/risks), and a visit-notes log — all real Supabase tables, live CRUD from the UI |
 | **Rostering** | Schedule shifts (client + carer + date/time), grouped by day, with scheduled/completed/missed status |
 | **Compliance** | Log carer training/certifications with expiry dates; a dashboard flags anything expired or expiring within 60 days |
-| **AI Assistant** | A chat interface backed by Grok (x.ai). It reads the team's recent visit notes as context and can summarise, spot gaps, or draft handovers |
+| **AI Assistant** | A chat interface backed by Groq. It reads the team's recent visit notes as context and can summarise, spot gaps, or draft handovers |
 | **Billing** | Stripe Checkout for three subscription tiers, a Stripe Customer Portal link to manage/cancel, and a webhook that syncs subscription status back into Supabase |
 | **Auth** | Supabase email/password auth, with a `carer` / `manager` role on the profile |
 
@@ -24,7 +24,7 @@ tools.
 - **Frontend:** React 19 + Vite + Tailwind CSS v4 + React Router
 - **Backend:** Supabase (Postgres + Auth + RLS)
 - **Billing:** Stripe (Checkout + Billing Portal + Webhooks)
-- **AI:** Grok (x.ai `grok-4`) via a Vercel serverless function
+- **AI:** Groq (`llama-3.3-70b-versatile`) via a Vercel serverless function
 - **Hosting:** Vercel (static frontend + `/api` serverless functions)
 
 See [`TECH_STACK.md`](./TECH_STACK.md) for how the pieces fit together.
@@ -70,15 +70,15 @@ only run when deployed to Vercel (or via `vercel dev` — see step 5).
    `customer.subscription.deleted`. Copy the **Signing secret** into
    `STRIPE_WEBHOOK_SECRET`.
 
-## 4. Set up Grok (x.ai)
+## 4. Set up Groq
 
 1. Get an API key from [console.x.ai](https://console.x.ai).
-2. Put it in `GROK_API_KEY`.
+2. Put it in `GROQ_API_KEY`.
 
-The chat function calls Grok's OpenAI-compatible endpoint
-(`https://api.x.ai/v1/chat/completions`) with the `grok-4` model and a
+The chat function calls Groq's OpenAI-compatible endpoint
+(`https://api.groq.com/openai/v1/chat/completions`) with the
 system prompt scoped to visit-note summarisation — swap the model name in
-[`api/chat.js`](./api/chat.js) if you're on a different Grok tier.
+[`api/chat.js`](./api/chat.js) if you want a different Groq model.
 
 ## 5. Deploy to Vercel
 
@@ -102,7 +102,7 @@ api/
   create-checkout-session.js   Stripe Checkout
   create-portal-session.js     Stripe Billing Portal
   stripe-webhook.js            Syncs subscription status → Supabase
-  chat.js                      Grok-powered assistant
+  chat.js                      Groq-powered assistant
 supabase/
   schema.sql                   Tables + RLS policies
 ```
